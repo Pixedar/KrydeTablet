@@ -23,25 +23,19 @@ public class MainActivity extends AppCompatActivity {
     final boolean[] flag = {true};
     final boolean[] flag2 = {false};
     ViewPager viewPager;
-
     PowerManager.WakeLock wakeLock;
-
-
     WeatherCircle mGLView;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-
-
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
 
         setContentView(R.layout.activity_main);
 
-
-        wakeLock = ((PowerManager)getSystemService(POWER_SERVICE)).newWakeLock(
-                PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
+        wakeLock = ((PowerManager) getSystemService(POWER_SERVICE)).newWakeLock(
+                PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "krydeTablet:DEBUG");
 
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
@@ -51,27 +45,24 @@ public class MainActivity extends AppCompatActivity {
 
         viewPager = findViewById(R.id.pager1);
 
-
         final TabLayout tabLayout = findViewById(R.id.tab_layout1);
-        tabLayout.addTab(tabLayout.newTab().setText("Weather"));
-        tabLayout.addTab(tabLayout.newTab().setText("Led"));
-        tabLayout.addTab(tabLayout.newTab().setText("History"));
-        tabLayout.addTab(tabLayout.newTab().setText("History2"));
+        tabLayout.addTab(tabLayout.newTab());
+        tabLayout.addTab(tabLayout.newTab());
+        tabLayout.addTab(tabLayout.newTab());
+        tabLayout.addTab(tabLayout.newTab());
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         final Switch s = findViewById(R.id.switch2);
         ProgressBar progressBar = findViewById(R.id.progressBar);
 
         final RelativeLayout layout = findViewById(R.id.main_layout);
+        final WeatherDataController weatherDataController = new WeatherDataController(getApplicationContext(), progressBar);
 
-        final WeatherDataController weatherDataController = new WeatherDataController(getApplicationContext(),progressBar);
+        //     viewPager.setAlpha(0);
+        //   s.setAlpha(0);
 
-   //     viewPager.setAlpha(0);
-     //   s.setAlpha(0);
-
-
-        ScreenController screenController = new ScreenController(this,wakeLock,weatherDataController);
-        screenController.setDisableTime(22,30);
-        screenController.setEnableTime(5,45);
+        ScreenController screenController = new ScreenController(wakeLock, weatherDataController);
+        screenController.setDisableTime(22, 30);
+        screenController.setEnableTime(5, 45);
         screenController.start(30000);
 
         final Handler handler = new Handler();
@@ -83,8 +74,8 @@ public class MainActivity extends AppCompatActivity {
                     viewPager.setAlpha(0);
                     s.setAlpha(0);
                 }*/
-            //    setContentView(mGLView);
-                if(!flag2[0]) {
+                //    setContentView(mGLView);
+                if (!flag2[0]) {
                     mGLView.setVisibility(View.VISIBLE);
                 }
             }
@@ -94,9 +85,9 @@ public class MainActivity extends AppCompatActivity {
         s.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(s.isChecked()){
+                if (s.isChecked()) {
                     flag2[0] = true;
-                }else{
+                } else {
                     flag2[0] = false;
                     handler.postDelayed(runnable, 16000);
 
@@ -116,9 +107,9 @@ public class MainActivity extends AppCompatActivity {
                         handler.postDelayed(runnable, 150000);
                     }
                 }*/
-              //  setContentView(mGLView);
+                //  setContentView(mGLView);
 //                layout.addView(mGLView);
-    //            handler.postDelayed(runnable, 5000);
+                //            handler.postDelayed(runnable, 5000);
 
                 return false;
             }
@@ -126,8 +117,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         weatherDataController.setKeepUpdating(true);
-        weatherDataController.loadData("days",1);
-      //  weatherDataController.loadData("results",150);
+        weatherDataController.loadData("days", 1);
+        //  weatherDataController.loadData("results",150);
         weatherDataController.setOnDataArrivedListener(new WeatherDataController.OnDataArrivedListener() {
             @Override
             public void dataArrived(ArrayList<Entry>[] result) {
@@ -136,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void dataUpdated(Entry[] result) {
-                Log.d("GGG","updated");
+                Log.d("GGG", "updated");
 /*
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
                         | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
@@ -144,9 +135,8 @@ public class MainActivity extends AppCompatActivity {
                         | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 */
 
-
-              //  getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-             ///   getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+                //  getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                ///   getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
 
 /*                PowerManager pm = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
@@ -167,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         final MainPagerAdapter adapter = new MainPagerAdapter
-                (getSupportFragmentManager(), tabLayout.getTabCount(),weatherDataController);
+                (getSupportFragmentManager(), tabLayout.getTabCount(), weatherDataController);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -189,9 +179,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setCurrentItem(1);
         viewPager.setOffscreenPageLimit(4);
 
-     //   WeatherCircle mGLView = findViewById(R.id.visualizer);
-
-       mGLView = new WeatherCircle(this);
+        mGLView = new WeatherCircle(this);
         mGLView.setListener(weatherDataController);
         mGLView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -202,7 +190,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         layout.addView(mGLView);
-
     }
 
 

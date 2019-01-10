@@ -2,6 +2,7 @@ package pixedar.com.krydetablet;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -17,16 +18,15 @@ import com.github.mikephil.charting.data.LineDataSet;
 
 import java.util.ArrayList;
 
-
 /**
  * Created by Wiktor on 2017-09-02.
  */
 
-public class OutsideTempFragment extends Fragment {
+public class FragmentChart extends Fragment{
     private LineChart mChart;
     private BarChart barChart;
     private final float[]maxima ={0,1};
-   // private List<Entry> val;
+    // private List<Entry> val;
     private float lastVal = -100;
     private int index = 0;
     private TextView textView;
@@ -52,7 +52,7 @@ public class OutsideTempFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.temp_chart2, container, false);
 
         mChart = rootView.findViewById(R.id.temp_chart2);
@@ -80,7 +80,7 @@ public class OutsideTempFragment extends Fragment {
             @Override
             public void dataArrived(ArrayList<Entry>[] result) {
                 size = result.length;
-                if (mChart.getData() == null){
+                if (mChart.getData() == null){  ////////////////
                     LineDataSet lineDataSet = ChartsSettings.getLineDataSet(result[index], ContextCompat.getColor(getContext(), R.color.outsideColor),filled);
 
                     LineData lineData = new LineData(lineDataSet,ChartsSettings.getMaxima(result[index]));
@@ -91,7 +91,7 @@ public class OutsideTempFragment extends Fragment {
                     maxima[1] = lineData.getXMax();*/
                     mChart.setData(lineData);
                 }else{
-            //        Log.d("GGG","exec");
+                    //        Log.d("GGG","exec");
                     LineDataSet lineDataSet = ChartsSettings.getLineDataSet(result[index], ContextCompat.getColor(getContext(), R.color.outsideColor),filled);
                     LineData lineData = new LineData(lineDataSet,ChartsSettings.getMaxima(result[index]));
                     if(!filled) {
@@ -108,7 +108,7 @@ public class OutsideTempFragment extends Fragment {
                     mChart.getData().notifyDataChanged();
                     mChart.notifyDataSetChanged();*/
                 }
-               lastVal = result[index].get(result[index].size()-1).getY();
+                lastVal = result[index].get(result[index].size()-1).getY();
                 mChart.invalidate();
                 textView.setText(title+String.valueOf(lastVal)+prefix);
             }
@@ -116,39 +116,39 @@ public class OutsideTempFragment extends Fragment {
             @Override
             public void dataUpdated(Entry[] result) {
 
-                 //   if (result[index].getY() != lastVal) {
-                 //       lastVal = result[index].getY();
-                        textView.setText(title + String.valueOf(result[index].getY()) + prefix);
+                //   if (result[index].getY() != lastVal) {
+                //       lastVal = result[index].getY();
+                textView.setText(title + String.valueOf(result[index].getY()) + prefix);
 
-                  (mChart.getData().getDataSetByIndex(0)).removeEntry(0);
+                (mChart.getData().getDataSetByIndex(0)).removeEntry(0);
                 (mChart.getData().getDataSetByIndex(0)).addEntry(result[index]);
                 mChart.moveViewToX(mChart.getData().getEntryCount());
 
                 int colors[] = new int[mChart.getData().getDataSetByIndex(0).getEntryCount()];
-                        for (int k = 0; k < colors.length; k++) {
-                            colors[k] = Color.HSVToColor(new float[]{map((int) (mChart.getData().getDataSetByIndex(0).getEntryForIndex(k).getY() * 100), (int) mChart.getData().getDataSetByIndex(0).getYMin() * 100, (int) mChart.getData().getDataSetByIndex(0).getYMax() * 100, 280, 0), 0.7f, 1});
-                        }
+                for (int k = 0; k < colors.length; k++) {
+                    colors[k] = Color.HSVToColor(new float[]{map((int) (mChart.getData().getDataSetByIndex(0).getEntryForIndex(k).getY() * 100), (int) mChart.getData().getDataSetByIndex(0).getYMin() * 100, (int) mChart.getData().getDataSetByIndex(0).getYMax() * 100, 280, 0), 0.7f, 1});
+                }
 
-                        ((LineDataSet) mChart.getData().getDataSetByIndex(0)).setColors(colors);
+                ((LineDataSet) mChart.getData().getDataSetByIndex(0)).setColors(colors);
 
-                        if (lastVal > (mChart.getData().getDataSetByIndex(1)).getEntryForIndex(0).getY()) {
-                            (mChart.getData().getDataSetByIndex(1)).getEntryForIndex(0).setX(result[index].getX());
-                            (mChart.getData().getDataSetByIndex(1)).getEntryForIndex(0).setY(lastVal);
-                             //    ChartsSettings.maxY[0] = lastVal;
-                            //    ChartsSettings.maxIndex[0] = size;
-                        }
-                        if (lastVal < (mChart.getData().getDataSetByIndex(1)).getEntryForIndex(1).getY()) {
-                            (mChart.getData().getDataSetByIndex(1)).getEntryForIndex(1).setX(result[index].getX());
-                            (mChart.getData().getDataSetByIndex(1)).getEntryForIndex(1).setY(lastVal);
-                            //   ChartsSettings.minIndex[0] = size;
-                        }
+                if (lastVal > (mChart.getData().getDataSetByIndex(1)).getEntryForIndex(0).getY()) {
+                    (mChart.getData().getDataSetByIndex(1)).getEntryForIndex(0).setX(result[index].getX());
+                    (mChart.getData().getDataSetByIndex(1)).getEntryForIndex(0).setY(lastVal);
+                    //    ChartsSettings.maxY[0] = lastVal;
+                    //    ChartsSettings.maxIndex[0] = size;
+                }
+                if (lastVal < (mChart.getData().getDataSetByIndex(1)).getEntryForIndex(1).getY()) {
+                    (mChart.getData().getDataSetByIndex(1)).getEntryForIndex(1).setX(result[index].getX());
+                    (mChart.getData().getDataSetByIndex(1)).getEntryForIndex(1).setY(lastVal);
+                    //   ChartsSettings.minIndex[0] = size;
+                }
 
-                        mChart.getData().notifyDataChanged();
-                     //   mChart.notifyDataSetChanged();
-                        mChart.invalidate();
-                        textView.invalidate();
+                mChart.getData().notifyDataChanged();
+                //   mChart.notifyDataSetChanged();
+                mChart.invalidate();
+                textView.invalidate();
 
-                   // }
+                // }
 
             }
 
@@ -160,50 +160,6 @@ public class OutsideTempFragment extends Fragment {
             @Override
             public void dataRangeChanged(int entries) {
 
-                if (mChart.getData() != null){
-                /*        LineDataSet set = (LineDataSet)mChart.getData().getDataSetByIndex(0);
-                        int range = (int) (((100-entries)/100.0f)*set.getValues().size());
-                        ArrayList<Entry> values = new ArrayList<>();
-
-                        for(int k = set.getValues().size()-1; k > set.getValues().size()-1 - range;k--){
-                        //    Log.d("GGG",String.valueOf(k));
-                         //   Log.d("GGG",String.valueOf(set.getValues().get(k)));
-                         //   Log.d("GGG",String.valueOf(set.getValues().get(k).getX()));
-                            values.add(new Entry(set.getValues().get(k).getX(),set.getValues().get(k).getX()));
-                        }
-                        if(values.size() >0){
-                            set.setValues(values);
-                        }*/
-                     //   mChart.setVisibleXRange(mChart.getData().getXMin(),(entries/100.0f)*mChart.getData().getXMax());
-                //    mChart.zoom(entries/100.0f,1,0,0);
-              //      ViewPortHandler handler = mChart.getViewPortHandler();
-
-
-                    LineDataSet set = (LineDataSet)mChart.getData().getDataSetByIndex(0);
-                    if(entries > 950){
-                     //   set.setMode(LineDataSet.Mode.);
-                        set.setDrawValues(true);
-                        set.setColor(Color.BLACK);
-                        //set.setCubicIntensity(0);
-                    }else{
-                        set.setMode(LineDataSet.Mode.LINEAR);
-                        set.setDrawValues(false);
-                    }
-
-              //      set.setValues(val.subList((int)((entries/1000.0f)*(val.size() -1)), val.size()-1));
-                    mChart.setData(new LineData(set));
-
-
-        /*            XAxis x = mChart.getXAxis();
-                    x.setAxisMinimum(maxima[0] +(maxima[1] - maxima[0])*(entries/100.0f));
-                    YAxis y=  mChart.getAxisLeft();
-                    y.setAxisMaximum(mChart.getYMax());
-                    y.setAxisMinimum(mChart.getYMin());*/
-
-                        mChart.getData().notifyDataChanged();
-                       mChart.notifyDataSetChanged();
-                        mChart.invalidate();
-                }
             }
         });
     }
@@ -212,5 +168,6 @@ public class OutsideTempFragment extends Fragment {
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
 }
+
 
 

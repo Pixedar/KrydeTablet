@@ -6,56 +6,49 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 public class MainPagerAdapter extends FragmentStatePagerAdapter {
     private int mNumOfTabs;
-    WeatherDataController weatherDataController;
-   // IntentController intentController;
-   // public MainPagerAdapter(FragmentManager fm, int NumOfTabs, Context context,IntentController intentController) {
+    private WeatherDataController weatherDataController;
+
+    // IntentController intentController;
+    // public MainPagerAdapter(FragmentManager fm, int NumOfTabs, Context context,IntentController intentController) {
 //        this.intentController = intentController;
-   public MainPagerAdapter(FragmentManager fm, int NumOfTabs, WeatherDataController weatherDataController) {
+    MainPagerAdapter(FragmentManager fm, int NumOfTabs, WeatherDataController weatherDataController) {
         super(fm);
         this.mNumOfTabs = NumOfTabs;
-
-        this.weatherDataController  = weatherDataController;
+        this.weatherDataController = weatherDataController;
     }
 
     @Override
     public Fragment getItem(int position) {
-
         switch (position) {
             case 1:
-                OutsideTempFragment outsideTempFragment = new OutsideTempFragment();
-                outsideTempFragment.setListener(weatherDataController);
-                outsideTempFragment.setIndex(0);
-                outsideTempFragment.setPrefix(" °C");
-                outsideTempFragment.settitle("Temperatura na zewnątrz: ");
-               return outsideTempFragment;
-/*            WeatherCircle weatherCircle = new WeatherCircle();
-            weatherCircle.setListener(intentController);
-            weatherCircle.setListener(weatherDataController);
-            return  weatherCircle;*/
-
-          //  return new HomeFragment();
+                FragmentChart FragmentChart = new FragmentChart();
+                FragmentChart.setListener(weatherDataController);
+                FragmentChart.setIndex(0);
+                FragmentChart.setPrefix(" °C");
+                FragmentChart.settitle("Temperatura na zewnątrz: ");
+                return FragmentChart;
             case 2:
-                OutsideTempFragment outsideTempFragment2 = new OutsideTempFragment();
-                outsideTempFragment2.setListener(weatherDataController);
-                outsideTempFragment2.setIndex(4);
-                outsideTempFragment2.setPrefix(" Hpa");
-                outsideTempFragment2.settitle("Ciśnienie: ");
-                return outsideTempFragment2;
+                FragmentChart FragmentChart2 = new FragmentChart();
+                FragmentChart2.setListener(weatherDataController);
+                FragmentChart2.setIndex(4);
+                FragmentChart2.setPrefix(" Hpa");
+                FragmentChart2.settitle("Ciśnienie: ");
+                return FragmentChart2;
             case 3:
-                OutsideTempFragment outsideTempFragment3 = new OutsideTempFragment();
-                outsideTempFragment3.setListener(weatherDataController);
-                outsideTempFragment3.setIndex(6);
-                outsideTempFragment3.setFilled(true);
-                outsideTempFragment3.setPrefix(" kmh");
-                outsideTempFragment3.settitle("Wiatr: ");
-                return outsideTempFragment3;
+                FragmentChart FragmentChart3 = new FragmentChart();
+                FragmentChart3.setListener(weatherDataController);
+                FragmentChart3.setIndex(6);
+                FragmentChart3.setFilled(true);
+                FragmentChart3.setPrefix(" kmh");
+                FragmentChart3.settitle("Wiatr: ");
+                return FragmentChart3;
             case 0:
-                OutsideTempFragment outsideTempFragment4 = new OutsideTempFragment();
-                outsideTempFragment4.setListener(weatherDataController);
-                outsideTempFragment4.setIndex(1);
-                outsideTempFragment4.setPrefix(" °C");
-                outsideTempFragment4.settitle("Temperatura w domu: ");
-                return outsideTempFragment4;
+                FragmentChart FragmentChart4 = new FragmentChart();
+                FragmentChart4.setListener(weatherDataController);
+                FragmentChart4.setIndex(1);
+                FragmentChart4.setPrefix(" °C");
+                FragmentChart4.settitle("Temperatura w domu: ");
+                return FragmentChart4;
             default:
                 return null;
         }

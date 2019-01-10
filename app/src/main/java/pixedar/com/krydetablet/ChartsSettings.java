@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
-public class ChartsSettings {
-    public static LineDataSet getLineDataSet(ArrayList<Entry> val, int color,boolean filled){
+class ChartsSettings {
+    static LineDataSet getLineDataSet(ArrayList<Entry> val, int color, boolean filled){
         LineDataSet lineDataSet = new LineDataSet(val, "set");
         lineDataSet.setDrawCircles(false);
         lineDataSet.setValueTextColor(Color.BLACK);
@@ -39,7 +39,7 @@ public class ChartsSettings {
         }
         return lineDataSet;
     }
-    public static void setColorfulLine(LineDataSet lineDataSet){
+    static void setColorfulLine(LineDataSet lineDataSet){
         lineDataSet.getEntryCount();
         int colors[] = new int[lineDataSet.getEntryCount()];
         for(int k =0; k< colors.length;k++ ){
@@ -55,7 +55,7 @@ public class ChartsSettings {
         //lineDataSet.setFillAlpha(220);
     }
 
-    public static void setXaxis(XAxis x){
+    static void setXaxis(XAxis x){
       //  x.setLabelCount(10, false);
         //x.setAvoidFirstLastClipping(true);
         x.setTextSize(18);
@@ -71,7 +71,7 @@ public class ChartsSettings {
             }
         });
     }
-    public static void setYaxis(YAxis y){
+    static void setYaxis(YAxis y){
    //     y.setLabelCount(8, false);
         y.setTextSize(18);
         //y.setSpaceTop(2);
@@ -83,7 +83,7 @@ public class ChartsSettings {
         y.setAxisLineColor(Color.WHITE);
         y.setEnabled(true);
     }
-    public static void setChart(LineChart mChart){
+    static void setChart(LineChart mChart){
         mChart.setViewPortOffsets(0, 0, 0, 0);
         mChart.getDescription().setEnabled(false);
         mChart.setDrawGridBackground(false);
@@ -102,10 +102,8 @@ public class ChartsSettings {
 /*public static final float[] maxY = {-100};
 public static final int[] maxIndex= {0};
     public static final int[] minIndex= {0};*/
-    public static LineDataSet getMaxima(final ArrayList<Entry> val){
-
+    static LineDataSet getMaxima(final ArrayList<Entry> val){
         float maxX = 0;
-
         int index = 0;
         final float[] maxY = {-100};
         final int[] minIndex= {0};
