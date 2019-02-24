@@ -2,10 +2,13 @@ package pixedar.com.krydetablet;
 
 import android.graphics.Color;
 
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
@@ -39,6 +42,17 @@ class ChartsSettings {
         }
         return lineDataSet;
     }
+    static BarDataSet getBarDataSet(ArrayList<BarEntry> val, int color){
+        BarDataSet barDataSet = new BarDataSet(val, "set");
+      //  barDataSet.setColor(Color.WHITE);
+
+/*        barDataSet.setValueTextColor(Color.BLACK);
+        barDataSet.setDrawValues(false);
+        barDataSet.setHighlightEnabled(false);
+        barDataSet.setColor(Color.WHITE);
+        barDataSet.setColor(color);*/
+        return barDataSet;
+    }
     static void setColorfulLine(LineDataSet lineDataSet){
         lineDataSet.getEntryCount();
         int colors[] = new int[lineDataSet.getEntryCount()];
@@ -56,7 +70,7 @@ class ChartsSettings {
     }
 
     static void setXaxis(XAxis x){
-      //  x.setLabelCount(10, false);
+        //  x.setLabelCount(10, false);
         //x.setAvoidFirstLastClipping(true);
         x.setTextSize(18);
         x.setTextColor(Color.WHITE);
@@ -70,6 +84,25 @@ class ChartsSettings {
                 return mFormat.format(new Date((long)value));
             }
         });
+    }
+    static void setBarXaxis(XAxis x){
+          x.setLabelCount(12);
+        //x.setAvoidFirstLastClipping(true);
+        x.setTextSize(21);
+        x.setTextColor(Color.rgb(158, 72, 18));
+        x.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
+       // x.setAxisLineColor(Color.rgb(158, 72, 18));
+        x.setDrawGridLines(false);
+
+
+       // x.setTextColor(Color.GRAY);
+/*        x.setValueFormatter(new IAxisValueFormatter() {
+            private SimpleDateFormat mFormat = new SimpleDateFormat("HH");
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return mFormat.format(new Date(System.currentTimeMillis()-(long)value*180*1000));
+            }
+        });*/
     }
     static void setYaxis(YAxis y){
    //     y.setLabelCount(8, false);
@@ -94,11 +127,25 @@ class ChartsSettings {
         mChart.getLegend().setEnabled(false);
         mChart.setMaxVisibleValueCount(Integer.MAX_VALUE);
         mChart.setBackgroundColor(Color.BLACK);
+        mChart.setAutoScaleMinMaxEnabled(true);
 
     }
-/*    public static void setChart(BarChart mChart){
 
-    }*/
+    public static void setChart(BarChart mChart){
+        mChart.setViewPortOffsets(0, 0, 0, 0);
+        mChart.getDescription().setEnabled(false);
+        mChart.setDrawGridBackground(false);
+        mChart.setTouchEnabled(false);
+        mChart.setPinchZoom(true);
+        mChart.setBackgroundColor(Color.WHITE);
+        mChart.getAxisRight().setEnabled(false);
+        mChart.getLegend().setEnabled(false);
+        mChart.setMaxVisibleValueCount(Integer.MAX_VALUE);
+        mChart.setBackgroundColor(Color.BLACK);
+   //     mChart.setAutoScaleMinMaxEnabled(true);
+
+        mChart.setDrawValueAboveBar(true);
+    }
 /*public static final float[] maxY = {-100};
 public static final int[] maxIndex= {0};
     public static final int[] minIndex= {0};*/
@@ -131,25 +178,24 @@ public static final int[] maxIndex= {0};
         lineDataSet2.setValueFormatter(new IValueFormatter() {
             @Override
             public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-
-                if(value == maxY[0]){
-                    if(maxIndex[0] < 5){
-                        return String.format("       %.1f", value);
-                    }else if(maxIndex[0]  > val.size() -5){
-                        return String.format("%.1f       ", value);
-                    }else{
-                        return String.format("%.1f", value);
+                    if (value == maxY[0]) {
+                        if (maxIndex[0] < 5) {
+                            return String.format("       %.1f", value);
+                        } else if (maxIndex[0] > val.size() - 5) {
+                            return String.format("%.1f       ", value);
+                        } else {
+                            return String.format("%.1f", value);
+                        }
+                    } else {
+                        if (minIndex[0] < 5) {
+                            return String.format("       %.1f", value);
+                        } else if (minIndex[0] > val.size() - 5) {
+                            return String.format("%.1f       ", value);
+                        } else {
+                            return String.format("%.1f", value);
+                        }
                     }
-                }else{
-                    if(minIndex[0] < 5){
-                        return String.format("       %.1f", value);
-                    }else if(minIndex[0]  > val.size() -5){
-                        return String.format("%.1f       ", value);
-                    }else{
-                        return String.format("%.1f", value);
-                    }
-                }
-              //  return String.format("%.1f", value);
+                    //  return String.format("%.1f", value);
             }
         });
         lineDataSet2.setCircleRadius(1.9f);
@@ -158,7 +204,28 @@ public static final int[] maxIndex= {0};
         lineDataSet2.setDrawValues(true);
         lineDataSet2.setColor(Color.RED,0);
         lineDataSet2.setCircleColor(Color.WHITE);
-        lineDataSet2.setValueTextSize(19);
+        lineDataSet2.setValueTextSize(23);
+        return lineDataSet2;
+    }
+
+    static LineDataSet getMaxima2(final ArrayList<Entry> val){
+        LineDataSet lineDataSet2 =  new LineDataSet(Arrays.asList(new Entry(val.get(val.size()-1).getX(), val.get(val.size()-1).getY())), "set3");
+        lineDataSet2.setValueFormatter(new IValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+                return "Duży skok";
+
+            }
+        });
+        lineDataSet2.setCircleRadius(2.5f);
+        //  lineDataSet2.setCircleColorHole(Color.BLACK);
+        lineDataSet2.setValueTextColor(Color.WHITE);
+        lineDataSet2.setDrawValues(true);
+        lineDataSet2.setColor(Color.RED,0);
+        lineDataSet2.setCircleColor(Color.RED);
+        lineDataSet2.setValueTextSize(24);
+        lineDataSet2.setDrawValues(false);
+        lineDataSet2.setDrawCircles(false);
         return lineDataSet2;
     }
 

@@ -7,13 +7,15 @@ import android.os.PowerManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
+import android.widget.TableLayout;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.data.Entry;
 
@@ -50,21 +52,23 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab());
         tabLayout.addTab(tabLayout.newTab());
         tabLayout.addTab(tabLayout.newTab());
+        tabLayout.addTab(tabLayout.newTab());
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         final Switch s = findViewById(R.id.switch2);
         ProgressBar progressBar = findViewById(R.id.progressBar);
 
+        final RelativeLayout constraintLayout = findViewById(R.id.testLayout);
+        final ImageView sw =  findViewById(R.id.imageView);
+        final TableLayout tableLayout = findViewById(R.id.tableLayoutW);
+
         final RelativeLayout layout = findViewById(R.id.main_layout);
-        final WeatherDataController weatherDataController = new WeatherDataController(getApplicationContext(), progressBar);
-
-        //     viewPager.setAlpha(0);
-        //   s.setAlpha(0);
-
-        ScreenController screenController = new ScreenController(wakeLock, weatherDataController);
+        final WeatherDataController weatherDataController = new WeatherDataController(getApplicationContext(), progressBar,sw);
+        wakeLock.acquire();
+ /*       ScreenController screenController = new ScreenController(wakeLock, weatherDataController);
         screenController.setDisableTime(22, 30);
         screenController.setEnableTime(5, 45);
         screenController.start(30000);
-
+*/
         final Handler handler = new Handler();
         final java.lang.Runnable runnable = new java.lang.Runnable() {
             @Override
@@ -77,6 +81,11 @@ public class MainActivity extends AppCompatActivity {
                 //    setContentView(mGLView);
                 if (!flag2[0]) {
                     mGLView.setVisibility(View.VISIBLE);
+                    constraintLayout.setVisibility(View.VISIBLE);
+                    sw.setVisibility(View.VISIBLE);
+                    if(!flag[0]) {
+                        tableLayout.setVisibility(View.VISIBLE);
+                    }
                 }
             }
         };
@@ -96,65 +105,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        viewPager.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-/*                if(!flag2[0]) {
-                    if (flag[0]) {
-                        flag[0] = false;
-                        viewPager.setAlpha(1);
-                        s.setAlpha(1);
-                        handler.postDelayed(runnable, 150000);
-                    }
-                }*/
-                //  setContentView(mGLView);
-//                layout.addView(mGLView);
-                //            handler.postDelayed(runnable, 5000);
-
-                return false;
-            }
-        });
-
 
         weatherDataController.setKeepUpdating(true);
         weatherDataController.loadData("days", 1);
+        weatherDataController.loadMonthlyWeatherDataFromServer(24*60*60*1000);
+        weatherDataController.getAutoRange();
         //  weatherDataController.loadData("results",150);
-        weatherDataController.setOnDataArrivedListener(new WeatherDataController.OnDataArrivedListener() {
-            @Override
-            public void dataArrived(ArrayList<Entry>[] result) {
-
-            }
-
-            @Override
-            public void dataUpdated(Entry[] result) {
-                Log.d("GGG", "updated");
-/*
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                        | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
-                        | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                        | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-*/
-
-                //  getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                ///   getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-
-
-/*                PowerManager pm = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
-                PowerManager.WakeLock wakelock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP,"abc");
-                wakeLock.acquire(TimeUnit.SECONDS.toMillis(5));*/
-
-            }
-
-            @Override
-            public void dailyMaximaArrived(ArrayList<Entry[][]> result) {
-
-            }
-
-            @Override
-            public void dataRangeChanged(int entries) {
-
-            }
-        });
 
         final MainPagerAdapter adapter = new MainPagerAdapter
                 (getSupportFragmentManager(), tabLayout.getTabCount(), weatherDataController);
@@ -177,22 +133,95 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         viewPager.setCurrentItem(1);
-        viewPager.setOffscreenPageLimit(4);
+        viewPager.setOffscreenPageLimit(5);
+
+
 
         mGLView = new WeatherCircle(this);
         mGLView.setListener(weatherDataController);
         mGLView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                mGLView.setVisibility(View.GONE);
-                handler.postDelayed(runnable, 16000);
+               mGLView.setVisibility(View.GONE);
+               constraintLayout.setVisibility(View.GONE);
+               sw.setVisibility(View.GONE);
+               tableLayout.setVisibility(View.GONE);
+                handler.postDelayed(runnable, 20000);
                 return true;
             }
         });
-        layout.addView(mGLView);
+     //   layout.addView(mGLView);  ////////////
+        initWeatherPatterns(weatherDataController,mGLView,constraintLayout,sw,tableLayout);
     }
 
+private void initWeatherPatterns(WeatherDataController weatherDataController, final WeatherCircle weatherCircle, final RelativeLayout constraintLayout,   final ImageView sw,   final TableLayout  tableLayout){
+  //  setContentView(R.layout.weather_patterns_menu);
 
+    tableLayout.setVisibility(View.GONE);
+
+    constraintLayout.addView(weatherCircle);
+    final boolean fg[] = {true};
+    sw.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (!fg[0]) {
+                tableLayout.setVisibility(View.GONE);
+                weatherCircle.setRenderMode(true);
+                flag[0] = true;
+                fg[0] = true;
+            } else {
+                tableLayout.setVisibility(View.VISIBLE);
+                weatherCircle.setRenderMode(false);
+                flag[0] = false;
+                fg[0] = false;
+            }
+        }
+    });
+
+    final TextView texts[] =  new TextView[6];
+
+    for(int k=0; k <texts.length;k++){
+        int resID = getResources().getIdentifier("text"+(char)(65+k), "id", getPackageName());
+        texts[k] = findViewById(resID);
+    }
+
+    weatherDataController.setOnDataArrivedListener(new WeatherDataController.OnDataArrivedListener() {
+        @Override
+        public void dataArrived(ArrayList<Entry>[] result) {
+            texts[0] .setText( " Temperatura na zewnątrz "+String.format("%.1f",result[GetFieldName.OUTSIDE_TEMP.getIndex()].get(result[GetFieldName.OUTSIDE_TEMP.getIndex()].size() - 1).getY())+"°C");
+            texts[1] .setText( " Ciśniene atmosferyczne "+String.format("%.1f",result[GetFieldName.PRESSURE.getIndex()].get(result[GetFieldName.PRESSURE.getIndex()].size() - 1).getY())+" Hpa");
+            texts[2] .setText( "           Wiatr " +String.format("%.1f",result[GetFieldName.AVERAGE_WIND.getIndex()].get(result[GetFieldName.AVERAGE_WIND.getIndex()].size() - 1).getY())+" km/h");
+            texts[3] .setText( "      Temperaura w domu "+String.format("%.1f",result[GetFieldName.INSIDE_TEMP.getIndex()].get(result[GetFieldName.INSIDE_TEMP.getIndex()].size() - 1).getY())+"°C");
+            texts[4] .setText( "        Wilgotność w domu "+String.format("%.1f",result[GetFieldName.INSIDE_HUM.getIndex()].get(result[GetFieldName.INSIDE_HUM.getIndex()].size() - 1).getY())+"%");
+            texts[5] .setText( "Wilgotność na zwenatrz "+String.format("%.0f",result[GetFieldName.OUTSIDE_HUM.getIndex()].get(result[GetFieldName.OUTSIDE_HUM.getIndex()].size() - 1).getY())+"%      ");
+        }
+
+        @Override
+        public void dataUpdated(Entry[] result) {
+            texts[0] .setText( " Temperatura na zewnątrz "+String.format("%.1f",result[GetFieldName.OUTSIDE_TEMP.getIndex()].getY())+"°C");
+            if(result[GetFieldName.PRESSURE.getIndex()].getY() >=1000.0f){
+                texts[1] .setText( "  Ciśniene atmosferyczne "+String.format("%.0f",result[GetFieldName.PRESSURE.getIndex()].getY())+" Hpa");
+            }else{
+                texts[1] .setText( "  Ciśniene atmosferyczne "+String.format("%.1f",result[GetFieldName.PRESSURE.getIndex()].getY())+" Hpa");
+            }
+            texts[2] .setText( "           Wiatr " +String.format("%.1f",result[GetFieldName.AVERAGE_WIND.getIndex()].getY())+" km/h");
+            texts[3] .setText( "      Temperaura w domu "+String.format("%.1f",result[GetFieldName.INSIDE_TEMP.getIndex()].getY())+"°C");
+            texts[4] .setText( "        Wilgotność w domu "+String.format("%.1f",result[GetFieldName.INSIDE_HUM.getIndex()].getY())+"%");
+            texts[5] .setText( "Wilgotność na zwenatrz "+String.format("%.0f",result[GetFieldName.OUTSIDE_HUM.getIndex()].getY())+"%      ");
+        }
+
+    });
+/*    for(TextView textView:texts){
+        textView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                Log.d("DEBUG","T");
+                return false;
+            }
+        });
+    }*/
+
+}
     @Override
     protected void onDestroy() {
         super.onDestroy();
