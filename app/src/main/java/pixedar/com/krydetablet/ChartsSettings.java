@@ -204,7 +204,8 @@ public static final int[] maxIndex= {0};
         lineDataSet2.setDrawValues(true);
         lineDataSet2.setColor(Color.RED,0);
         lineDataSet2.setCircleColor(Color.WHITE);
-        lineDataSet2.setValueTextSize(23);
+        lineDataSet2.setValueTextSize(22); // prawidlowe
+     //   lineDataSet2.setValueTextSize(19); /// tylko na moj tablet
         return lineDataSet2;
     }
 
@@ -213,17 +214,19 @@ public static final int[] maxIndex= {0};
         lineDataSet2.setValueFormatter(new IValueFormatter() {
             @Override
             public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-                return "Duży skok";
+                return "             SKOK";
 
             }
         });
-        lineDataSet2.setCircleRadius(2.5f);
-        //  lineDataSet2.setCircleColorHole(Color.BLACK);
+        lineDataSet2.setCircleRadius(2.7f);
+        ///lineDataSet2.setCircleColorHole(Color.BLACK);
+
         lineDataSet2.setValueTextColor(Color.WHITE);
         lineDataSet2.setDrawValues(true);
         lineDataSet2.setColor(Color.RED,0);
         lineDataSet2.setCircleColor(Color.RED);
-        lineDataSet2.setValueTextSize(24);
+    //    lineDataSet2.setValueTextSize(22); // prawidlowe
+        lineDataSet2.setValueTextSize(19); /// tylko na moj tablet
         lineDataSet2.setDrawValues(false);
         lineDataSet2.setDrawCircles(false);
         return lineDataSet2;

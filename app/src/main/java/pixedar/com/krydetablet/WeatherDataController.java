@@ -2,7 +2,6 @@ package pixedar.com.krydetablet;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.ImageView;
@@ -34,10 +33,10 @@ public class WeatherDataController {
     private RequestQueue requestQueue;
     private final static String MAIN_CHANNREL_ID = "333150";
     private final static String DAILY_MAXIMA_ID = "544874";
-    private final static String TALKBACK_ID ="28333";
+    private final static String TALKBACK_ID = "28333";
     private final static String AUTO_RANGE_ID = "639828";
     private final static String DAILY_MAXIMA_APIKEY = "15CNBVEG8QAQS7QM";
-    private final static String TALKBACK_API_KEY ="QBRE5TVUGHQCNM88";
+    private final static String TALKBACK_API_KEY = "QBRE5TVUGHQCNM88";
     private final static String AUTO_RANGE_API_KEY = "HILU2V0VU2BNNC6C";
 
     private String fileName = "0000";
@@ -54,29 +53,35 @@ public class WeatherDataController {
     private ProgressBar progressBar;
     private boolean flag = true;
     private ImageView imageView;
+
     WeatherDataController(Context context, ProgressBar progressBar, ImageView imageView) {
         this.progressBar = progressBar;
         this.context = context;
         this.imageView = imageView;
         requestQueue = Volley.newRequestQueue(context);
     }
+
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
+
     void setKeepUpdating(boolean keepUpdating) {
         this.keepUpdating = keepUpdating;
     }
 
-    public long getInterval(){
-        return  interval[0];
+    public long getInterval() {
+        return interval[0];
     }
+
     void setOnDataArrivedListener(OnDataArrivedListener listener) {
         this.listeners.add(listener);
     }
-    void setOnAutoRangeChangedListener(OnAutoRangeChanged listener){
+
+    void setOnAutoRangeChangedListener(OnAutoRangeChanged listener) {
         this.autoRangeListeners.add(listener);
     }
-    void setOnMonthlyDataArrivedListener(OnMonthlyDataArrivedListener listener){
+
+    void setOnMonthlyDataArrivedListener(OnMonthlyDataArrivedListener listener) {
         this.monthlyDataListeners.add(listener);
     }
 
@@ -107,39 +112,39 @@ public class WeatherDataController {
         }
         final long initialDelay[] = {(Calendar.getInstance().getTimeInMillis() - 3600000 - lastEntryTime[0])};
         interval[0] = lastEntryTime[0] - secondEntryTime;
-    //    Log.d("DEBUG", "initialDelay=" + String.valueOf(initialDelay / 60000.0f) + " interval=" + String.valueOf((interval[0]) / 60000.0f));
+        //    Log.d("DEBUG", "initialDelay=" + String.valueOf(initialDelay / 60000.0f) + " interval=" + String.valueOf((interval[0]) / 60000.0f));
         if (initialDelay[0] >= 0 && interval[0] > 0) {
             final Handler handler = new Handler();
             final java.lang.Runnable runnable = new java.lang.Runnable() {
                 @Override
                 public void run() {
-                    loadLastEntryFromServer("https://thingspeak.com/channels/"+MAIN_CHANNREL_ID+"/feeds/last.json");
-       //             Log.d("GGG", String.valueOf(interval[0] + margin));
+                    loadLastEntryFromServer("https://thingspeak.com/channels/" + MAIN_CHANNREL_ID + "/feeds/last.json");
+                    //             Log.d("GGG", String.valueOf(interval[0] + margin));
                     handler.postDelayed(this, interval[0] + margin);
                 }
             };
             handler.postDelayed(runnable, initialDelay[0] + margin);
 
         } else {
-              Log.d("DEBUG","initialDelay="+String.valueOf(initialDelay[0])+" interval="+String.valueOf(interval[0]));
-              if(initialDelay[0]<0&&interval[0] +initialDelay[0]>0&&interval[0] +initialDelay[0]<110000){
-                  initialDelay[0] = interval[0] +initialDelay[0];
-              }else{
-                  initialDelay[0] = 90000;
-              }
-             interval[0] =180000;
+            Log.d("DEBUG", "initialDelay=" + String.valueOf(initialDelay[0]) + " interval=" + String.valueOf(interval[0]));
+            if (initialDelay[0] < 0 && interval[0] + initialDelay[0] > 0 && interval[0] + initialDelay[0] < 110000) {
+                initialDelay[0] = interval[0] + initialDelay[0];
+            } else {
+                initialDelay[0] = 90000;
+            }
+            interval[0] = 180000;
             final Handler handler = new Handler();
             final java.lang.Runnable runnable = new java.lang.Runnable() {
                 @Override
                 public void run() {
-                    loadLastEntryFromServer("https://thingspeak.com/channels/"+MAIN_CHANNREL_ID+"/feeds/last.json");
+                    loadLastEntryFromServer("https://thingspeak.com/channels/" + MAIN_CHANNREL_ID + "/feeds/last.json");
                     //             Log.d("GGG", String.valueOf(interval[0] + margin));
                     handler.postDelayed(this, interval[0] + margin);
                 }
             };
             handler.postDelayed(runnable, initialDelay[0] + margin);
         }
-     //   initProgressBar(initialDelay);
+        //   initProgressBar(initialDelay);
     }
 
     private void initProgressBar(long initialDelay) {
@@ -160,6 +165,7 @@ public class WeatherDataController {
         };
         handler.postDelayed(runnable, updateInterval);
     }
+
     private void checkTalkBackCommand(String url) {
         executeJsonObjectReqest(url, new Runnable() {
             @Override
@@ -175,14 +181,19 @@ public class WeatherDataController {
 
 
     }
-    public void enableWarining(){
-        imageView.setColorFilter(Color.RED);
-        imageView.setAlpha(1);
+
+    public void enableWarining(boolean importatnt) {
+        imageView.setAlpha(1.0f);
+        if (importatnt) {
+            imageView.setImageResource(R.drawable.ic_red_warning);
+        } else {
+            imageView.setImageResource(R.drawable.ic_yellow_warning);
+        }
     }
 
-    public void disableWarining(){
-        imageView.setColorFilter(null);
+    public void disableWarining() {
         imageView.setAlpha(0.3f);
+        imageView.setImageResource(R.mipmap.ic_cr);
     }
 
     private void executeTalkBackCommand(JSONObject command) throws JSONException {
@@ -191,6 +202,45 @@ public class WeatherDataController {
                 interval[0] = command.getInt("position");
                 break;
         }
+    }
+
+    public void loadMonthlyRainData(final long updateInterval) {
+        String url = "https://api.thingspeak.com/channels/333150/fields/8.json?days=31&sum=daily";
+        executeJsonObjectReqest(url, new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONArray feeds = getResponse().getJSONArray("feeds");
+                    ArrayList<Entry> result = new ArrayList<>();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.GERMAN);
+                    long time;
+                    for (int k = 0; k < feeds.length(); k++) {
+                        time = sdf.parse(feeds.getJSONObject(k).getString("created_at")).getTime();
+                        try {
+                            result.add(new Entry(time, (float) feeds.getJSONObject(k).getDouble("field" + String.valueOf(8))));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    for (OnMonthlyDataArrivedListener l : monthlyDataListeners) {
+                        l.sumDataArrived(result);
+                    }
+                    final Handler handler = new Handler();
+                    final java.lang.Runnable runnable = new java.lang.Runnable() {
+                        @Override
+                        public void run() {
+                            loadMonthlyRainData(updateInterval);
+                        }
+                    };
+                    handler.postDelayed(runnable, updateInterval);
+
+                } catch (Exception e) {
+                    msg(e.toString());
+                    e.printStackTrace();
+                }
+
+            }
+        });
     }
 
     private void loadLastEntryFromServer(String url) {
@@ -204,7 +254,9 @@ public class WeatherDataController {
                     String str = obj.getString("created_at");
                     long time = sdf.parse(str).getTime();
                     for (int k = 0; k < 8; k++) {
-                        entry[k] = new Entry(time, (float) obj.getDouble("field" + String.valueOf(k + 1)));
+
+                            entry[k] = new Entry(time, (float) obj.getDouble("field" + String.valueOf(k + 1)));
+
                     }
                     String date = str.substring(0, 10);
                     if (!date.equals(lastDate)) {
@@ -216,8 +268,8 @@ public class WeatherDataController {
 
                     int margin = 2000;
                     if (time - lastEntryTime[0] > interval[0] + margin || time - lastEntryTime[0] < interval[0] - margin) {
-                     //   Log.d("DEBUG", "poszlo");
-                    //    checkTalkBackCommand("https://api.thingspeak.com/talkbacks/"+TALKBACK_ID +"/commands/execute.json?api_key="+TALKBACK_API_KEY);
+                        //   Log.d("DEBUG", "poszlo");
+                        //    checkTalkBackCommand("https://api.thingspeak.com/talkbacks/"+TALKBACK_ID +"/commands/execute.json?api_key="+TALKBACK_API_KEY);
                     }
                     lastEntryTime[0] = time;
 
@@ -262,7 +314,7 @@ public class WeatherDataController {
 
 
     public void loadMonthlyWeatherDataFromServer(final long updateInterval) {
-       String  url = "https://api.thingspeak.com/channels/333150/feeds.json?days=31&average=daily";
+        String url = "https://api.thingspeak.com/channels/333150/feeds.json?days=31&average=daily";
         executeJsonObjectReqest(url, new Runnable() {
             @Override
             public void run() {
@@ -271,7 +323,7 @@ public class WeatherDataController {
                     ArrayList<Entry>[] feed = readJsonArray(feeds);
                     channelInfo = getResponse().getJSONObject("channel");
                     for (OnMonthlyDataArrivedListener l : monthlyDataListeners) {
-                        l.dataArrived(feed);
+                        l.avgDataArrived(feed);
                     }
 
                 } catch (Exception e) {
@@ -293,7 +345,7 @@ public class WeatherDataController {
 
 
     public void getAutoRange() {
-        String url = "https://api.thingspeak.com/channels/"+AUTO_RANGE_ID+"/feeds.json?api_key="+AUTO_RANGE_API_KEY+"&results=1";
+        String url = "https://api.thingspeak.com/channels/" + AUTO_RANGE_ID + "/feeds.json?api_key=" + AUTO_RANGE_API_KEY + "&results=1";
         executeJsonObjectReqest(url, new Runnable() {
             @Override
             public void run() {
@@ -385,9 +437,13 @@ public class WeatherDataController {
     public interface OnAutoRangeChanged {
         void autoRangeChanged(JSONArray feed);
     }
-    public interface OnMonthlyDataArrivedListener{
-        void dataArrived(ArrayList<Entry>[] result);
+
+    public interface OnMonthlyDataArrivedListener {
+        void avgDataArrived(ArrayList<Entry>[] result);
+
         void dataUpdated(Entry[] result);
+
+        void sumDataArrived(ArrayList<Entry> result);
     }
 
     private class Runnable implements java.lang.Runnable {

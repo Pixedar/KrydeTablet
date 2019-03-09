@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+
+
         wakeLock = ((PowerManager) getSystemService(POWER_SERVICE)).newWakeLock(
                 PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "krydeTablet:DEBUG");
 
@@ -43,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
                 | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
                 | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+
+        getWindow().getDecorView().setSystemUiVisibility(8);
 
 
         viewPager = findViewById(R.id.pager1);
@@ -105,13 +109,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-        weatherDataController.setKeepUpdating(true);
-        weatherDataController.loadData("days", 1);
-        weatherDataController.loadMonthlyWeatherDataFromServer(24*60*60*1000);
-        weatherDataController.getAutoRange();
-        //  weatherDataController.loadData("results",150);
-
         final MainPagerAdapter adapter = new MainPagerAdapter
                 (getSupportFragmentManager(), tabLayout.getTabCount(), weatherDataController);
         viewPager.setAdapter(adapter);
@@ -152,6 +149,12 @@ public class MainActivity extends AppCompatActivity {
         });
      //   layout.addView(mGLView);  ////////////
         initWeatherPatterns(weatherDataController,mGLView,constraintLayout,sw,tableLayout);
+
+        weatherDataController.setKeepUpdating(true);
+        weatherDataController.loadData("days", 1);
+        weatherDataController.loadMonthlyWeatherDataFromServer(24*60*60*1000);
+        weatherDataController.getAutoRange();
+        weatherDataController.loadMonthlyRainData(24*60*60*1000);
     }
 
 private void initWeatherPatterns(WeatherDataController weatherDataController, final WeatherCircle weatherCircle, final RelativeLayout constraintLayout,   final ImageView sw,   final TableLayout  tableLayout){

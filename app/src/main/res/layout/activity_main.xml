@@ -36,6 +36,7 @@
         android:layout_width="33dp"
         android:layout_height="37dp"
         android:layout_alignParentRight="true"
+        android:alpha="0.5"
         android:checked="false"
         android:switchTextAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
         android:textOff="  "

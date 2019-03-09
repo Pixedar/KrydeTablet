@@ -104,7 +104,6 @@ public class WeatherPatternsRenderer {
                 values[5] = map(result[GetFieldName.INSIDE_TEMP.getIndex()].get(result[GetFieldName.INSIDE_TEMP.getIndex()].size() - 1).getY(), range.getMinInsideTemperature(), range.getMaxInsideTemperature(), scaleRange[1],scaleRange[0]);
                 values[4] = map(result[GetFieldName.INSIDE_HUM.getIndex()].get(result[GetFieldName.INSIDE_HUM.getIndex()].size() - 1).getY(), range.getMinInsideHumidity(), range.getMaxInsideHumidity(), scaleRange[1],scaleRange[0]);
                 values[3] = map(result[GetFieldName.OUTSIDE_HUM.getIndex()].get(result[GetFieldName.OUTSIDE_HUM.getIndex()].size() - 1).getY(), range.getMinOutsideHumidity(), range.getMaxOutsideHumidity(), scaleRange[1],scaleRange[0]);
-                Log.d("DEBUG", String.valueOf(values[0]));
                 flag = true;
             }
 
@@ -120,7 +119,7 @@ public class WeatherPatternsRenderer {
                 values[5] = map(result[GetFieldName.INSIDE_TEMP.getIndex()].getY(),  range.getMinInsideTemperature(), range.getMaxInsideTemperature(), scaleRange[1],scaleRange[0]);
                 values[4] = map(result[GetFieldName.INSIDE_HUM.getIndex()].getY(), range.getMinInsideHumidity(), range.getMaxInsideHumidity(), scaleRange[1],scaleRange[0]);
                 values[3] = map(result[GetFieldName.OUTSIDE_HUM.getIndex()].getY(), range.getMinOutsideHumidity(), range.getMaxOutsideHumidity(), scaleRange[1],scaleRange[0]);
-                Log.d("DEBUG", "arrived2");
+                Log.d("DEBUG", "dataArrived");
             }
 
         });
@@ -158,6 +157,8 @@ public class WeatherPatternsRenderer {
             vertices[vertexIndex] = (float) (Math.cos((time + i) / b) * b + Math.sin((time + i) / val) * a);
             vertexIndex++;
         }
+
+
 
         vertexBuffer.put(vertices);
         vertexBuffer.position(0);

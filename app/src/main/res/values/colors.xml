@@ -3,7 +3,7 @@
     <color name="colorPrimary">#64cbb4</color>
     <color name="colorPrimaryDark">#64cbb4</color>
     <color name="colorAccent">#64cbb4</color>
-    <color name="black">#313131</color>
+    <color name="black">#272727</color>
     <color name="homeColor">#69becf</color>
     <color name="outsideColor">#6e6e6e</color>
     <color name="lightGray">#bebebe</color>
@@ -18,4 +18,5 @@
     <color name="red">#b22424</color>
     <color name="green2">#327b1e</color>
     <color name="blue">#2f2faa</color>
+    <color name="jump">#ffa0a0</color>
 </resources>

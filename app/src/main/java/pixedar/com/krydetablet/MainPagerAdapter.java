@@ -25,9 +25,10 @@ public class MainPagerAdapter extends FragmentStatePagerAdapter {
                 fragment.getFragmentLineChart().setListener(weatherDataController);
                 fragment.getFragmentLineChart().setIndex(0);
                 fragment.getFragmentLineChart().setPrefix(" °C");
+                fragment.getFragmentLineChart().setTempChart(true);
                 fragment.getFragmentLineChart().settitle("Temperatura na zewnątrz: ");
 
-                fragment.getFragmentBarChart().setMonthlyDataListener(weatherDataController);
+                fragment.getFragmentBarChart().setMonthlyDataListener(weatherDataController,1);
                 fragment.getFragmentBarChart().setIndex(0);
                 fragment.getFragmentBarChart().setPrefix(" °C");
                 fragment.getFragmentBarChart().settitle("Temperatura na zewnątrz: ");
@@ -38,14 +39,14 @@ public class MainPagerAdapter extends FragmentStatePagerAdapter {
                 fragmentLineChart2.getFragmentLineChart().setIndex(4);
                 fragmentLineChart2.getFragmentLineChart().setPrefix(" Hpa");
                 fragmentLineChart2.getFragmentLineChart().settitle("Ciśnienie: ");
-                fragmentLineChart2.getFragmentLineChart().setChnagingSpeedControl(true,0.087f);
+                fragmentLineChart2.getFragmentLineChart().setRapidChangeDetection(0.108f,2.0f,12.7f);
 
-                fragmentLineChart2.getFragmentBarChart().setMonthlyDataListener(weatherDataController);
+                fragmentLineChart2.getFragmentBarChart().setMonthlyDataListener(weatherDataController,1);
                 fragmentLineChart2.getFragmentBarChart().setIndex(4);
                 fragmentLineChart2.getFragmentBarChart().setPrefix(" Hpa");
                 fragmentLineChart2.getFragmentBarChart().settitle("Ciśnienie: ");
                 return fragmentLineChart2;
-            case 3:
+            case 4:
                 RainFragment fragmentLineChart3 = new RainFragment();
                 fragmentLineChart3.getFragmentBarChart().setListener(weatherDataController);
                 fragmentLineChart3.getFragmentBarChart().setIndex(7);
@@ -54,19 +55,34 @@ public class MainPagerAdapter extends FragmentStatePagerAdapter {
                 fragmentLineChart3.getFragmentBarChart().setPrefix(" mm/h");
                 fragmentLineChart3.getFragmentBarChart().setOneHourSumEnabled(true);
                 fragmentLineChart3.getFragmentBarChart().settitle("Deszcz: ");
+
+                fragmentLineChart3.getFragmentBarChart2().setMonthlyDataListener(weatherDataController,2);
+
                 return fragmentLineChart3;
-            case 4:
-                pixedar.com.krydetablet.Fragment fragmentLineChart5 = new    pixedar.com.krydetablet.Fragment();
+            case 3:
+/*                pixedar.com.krydetablet.Fragment fragmentLineChart5 = new pixedar.com.krydetablet.Fragment();
                 fragmentLineChart5.getFragmentLineChart().setListener(weatherDataController);
                 fragmentLineChart5.getFragmentLineChart().setIndex(5);
                 fragmentLineChart5.getFragmentLineChart().setPrefix(" kmh");
                 fragmentLineChart5.getFragmentLineChart().settitle("Wiatr: ");
+                fragmentLineChart5.getFragmentLineChart().setFilled(true);
 
-                fragmentLineChart5.getFragmentBarChart().setMonthlyDataListener(weatherDataController);
+                fragmentLineChart5.getFragmentBarChart().setMonthlyDataListener(weatherDataController,1);
+                fragmentLineChart5.getFragmentBarChart().setIndex(5);
+                fragmentLineChart5.getFragmentBarChart().setPrefix(" kmh");
+                fragmentLineChart5.getFragmentBarChart().settitle("Wiatr: ");*/
+
+                RainFragment fragmentLineChart5 = new RainFragment();
+                fragmentLineChart5.getFragmentBarChart().setListener(weatherDataController);
                 fragmentLineChart5.getFragmentBarChart().setIndex(5);
                 fragmentLineChart5.getFragmentBarChart().setPrefix(" kmh");
                 fragmentLineChart5.getFragmentBarChart().settitle("Wiatr: ");
+                fragmentLineChart5.getFragmentBarChart().setWindChart(true);
 
+                fragmentLineChart5.getFragmentBarChart2().setMonthlyDataListener(weatherDataController,1);
+                fragmentLineChart5.getFragmentBarChart2().setIndex(5);
+                fragmentLineChart5.getFragmentBarChart2().setPrefix(" kmh");
+                fragmentLineChart5.getFragmentBarChart2().settitle("Wiatr: ");
                 return fragmentLineChart5;
             case 0:
                 pixedar.com.krydetablet.Fragment fragmentLineChart4 = new pixedar.com.krydetablet.Fragment();
@@ -75,7 +91,7 @@ public class MainPagerAdapter extends FragmentStatePagerAdapter {
                 fragmentLineChart4.getFragmentLineChart().setPrefix(" °C");
                 fragmentLineChart4.getFragmentLineChart().settitle("Temperatura w domu: ");
 
-                fragmentLineChart4.getFragmentBarChart().setMonthlyDataListener(weatherDataController);
+                fragmentLineChart4.getFragmentBarChart().setMonthlyDataListener(weatherDataController,1);
                 fragmentLineChart4.getFragmentBarChart().setIndex(1);
                 fragmentLineChart4.getFragmentBarChart().setPrefix(" °C");
                 fragmentLineChart4.getFragmentBarChart().settitle("Temperatura w domu: ");

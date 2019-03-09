@@ -63,6 +63,19 @@ public class Range {
             setMinInsideHumidity(result[GetFieldName.INSIDE_HUM.getIndex()].getY());
         }
     }
+    public float[] getRangeByIndex(int index){
+        switch (index){
+            case 0: return new float[]{getMaxOutsideTemperature(),getMinOutsideTemperature()};
+            case 1: return new float[]{getMaxInsideTemperature(),getMinInsideTemperature()};
+            case 2: return new float[]{getMaxOutsideHumidity(),getMinOutsideHumidity()};
+            case 3: return new float[]{getMaxInsideHumidity(),getMinInsideHumidity()};
+            case 4: return new float[]{getMaxPressure(),getMinPressure()};
+            case 5: return new float[]{getMaxAverangeWind(),getMinAverangeWind()};
+            case 6: return new float[]{getMaxWind(),0};
+            case 7: return new float[]{getMaxRain(),0};
+            default: return new float[]{0,0};
+        }
+    }
     public void setAutoRange(JSONArray feeds){
         String separator = "p";
         for (int k = 0; k < feeds.length(); k++) {
