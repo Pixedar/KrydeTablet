@@ -12,7 +12,7 @@ public class ApparentTemperature {
     private float wind;
     private Range range;
     public void update(float t, float rh, float wind,Range range){
-        this.wind = wind * 3.6f;
+        this.wind = wind * 3.44808949784f;
         this.rh = rh;
         this.t = t;
         this.range = range;

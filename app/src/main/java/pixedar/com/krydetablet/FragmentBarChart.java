@@ -1,5 +1,6 @@
 package pixedar.com.krydetablet;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.TextView;
@@ -25,7 +26,7 @@ import java.util.Date;
  * Created by Wiktor on 2017-09-02.
  */
 
-public class FragmentBarChart  {
+public class FragmentBarChart {
     private BarChart mChart;
     private int index = 0;
     private TextView textView;
@@ -39,12 +40,12 @@ public class FragmentBarChart  {
     }
 
     private boolean windChart = false;
-    private float factor =1;
+    private float factor = 1;
     private float sum = 0;
     private Calendar time;
     private int h = 0;
-    private int lastH =0;
-    
+    private int lastH = 0;
+
     public void setFactor(float factor) {
         this.factor = factor;
     }
@@ -66,31 +67,32 @@ public class FragmentBarChart  {
         this.title = title;
     }
 
-    public View init(View rootView){
+    @SuppressLint("ResourceAsColor")
+    public View init(View rootView) {
         mChart = rootView.findViewById(R.id.bar_chart);
         ChartsSettings.setChart(mChart);
         textView = rootView.findViewById(R.id.bar_chart_text);
         ChartsSettings.setBarXaxis(mChart.getXAxis());
-        if(oneHourSumEnabled) {
+        if (oneHourSumEnabled) {
             mChart.getXAxis().setValueFormatter(new IAxisValueFormatter() {
-            private SimpleDateFormat mFormat = new SimpleDateFormat("HH:00");
+                private SimpleDateFormat mFormat = new SimpleDateFormat("HH:00");
 
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                return mFormat.format(new Date((long) value * 2500000));
-            }
+                @Override
+                public String getFormattedValue(float value, AxisBase axis) {
+                    return mFormat.format(new Date((long) value * 2500000));
+                }
             });
-            mChart.getAxisLeft().setAxisMinimum(-0.1f);
-        }else if(windChart){
+            mChart.getAxisLeft().setAxisMinimum(-0.05f);
+        } else if (windChart) {
             mChart.getXAxis().setValueFormatter(new IAxisValueFormatter() {
                 private SimpleDateFormat mFormat = new SimpleDateFormat("HH:mm");
 
                 @Override
                 public String getFormattedValue(float value, AxisBase axis) {
-                    return mFormat.format(new Date((long) value *  2500000));
+                    return mFormat.format(new Date((long) value * 2500000));
                 }
             });
-        }else {
+        } else {
             mChart.getXAxis().setValueFormatter(new IAxisValueFormatter() {
                 private SimpleDateFormat mFormat = new SimpleDateFormat("MM-dd");
 
@@ -107,14 +109,15 @@ public class FragmentBarChart  {
         return rootView;
     }
 
-    public void init(TextView textView, BarChart mChart){
+    @SuppressLint("ResourceAsColor")
+    public void init(TextView textView, BarChart mChart) {
         this.mChart = mChart;
         this.textView = textView;
-    //    mChart = rootView.findViewById(R.id.bar_chart);
+        //    mChart = rootView.findViewById(R.id.bar_chart);
         ChartsSettings.setChart(this.mChart);
-     //   textView = rootView.findViewById(R.id.bar_chart_text);
+        //   textView = rootView.findViewById(R.id.bar_chart_text);
         ChartsSettings.setBarXaxis(this.mChart.getXAxis());
-        if(oneHourSumEnabled) {
+        if (oneHourSumEnabled) {
             this.mChart.getXAxis().setValueFormatter(new IAxisValueFormatter() {
                 private SimpleDateFormat mFormat = new SimpleDateFormat("HH:00");
 
@@ -123,20 +126,20 @@ public class FragmentBarChart  {
                     return mFormat.format(new Date((long) value * 2500000));
                 }
             });
-            this.mChart.getAxisLeft().setAxisMinimum(-0.1f);
+            this.mChart.getAxisLeft().setAxisMinimum(-0.05f);
 
 
-        } else if(windChart){
-                mChart.getXAxis().setValueFormatter(new IAxisValueFormatter() {
-                    private SimpleDateFormat mFormat = new SimpleDateFormat("HH:mm");
+        } else if (windChart) {
+            mChart.getXAxis().setValueFormatter(new IAxisValueFormatter() {
+                private SimpleDateFormat mFormat = new SimpleDateFormat("HH:mm");
 
-                    @Override
-                    public String getFormattedValue(float value, AxisBase axis) {
-                        return mFormat.format(new Date((long) value *  240000));
-                    }
-                });
-                mChart.getAxisLeft().setAxisMinimum(-0.18f);
-        }else{
+                @Override
+                public String getFormattedValue(float value, AxisBase axis) {
+                    return mFormat.format(new Date((long) value * 240000));
+                }
+            });
+            mChart.getAxisLeft().setAxisMinimum(-0.18f);
+        } else {
             this.mChart.getXAxis().setValueFormatter(new IAxisValueFormatter() {
                 private SimpleDateFormat mFormat = new SimpleDateFormat("MM-dd");
 
@@ -165,15 +168,15 @@ public class FragmentBarChart  {
             @Override
             public void dataArrived(ArrayList<Entry>[] result) {
                 ArrayList<BarEntry> barResult = new ArrayList<>();
-                if(oneHourSumEnabled){
-                    calcHourSum(barResult,result);
-                }else {
-                    for(Entry e: result[index]) {
-                        barResult.add(new BarEntry(e.getX() / 240000, e.getY()));
-                        }
+                if (oneHourSumEnabled) {
+                    calcHourSum(barResult, result);
+                } else {
+                    for (Entry e : result[index]) {
+                        barResult.add(new BarEntry(e.getX() / 240000, e.getY()*factor));
+                    }
                 }
-                    BarDataSet BarDataSet =ChartsSettings.getBarDataSet(barResult,Color.WHITE);
-                if(oneHourSumEnabled) {
+                BarDataSet BarDataSet = ChartsSettings.getBarDataSet(barResult, Color.WHITE);
+                if (oneHourSumEnabled) {
                     BarDataSet.setValueFormatter(new IValueFormatter() {
                         @Override
                         public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
@@ -187,28 +190,29 @@ public class FragmentBarChart  {
 
                 }
 
-                    BarData barData = new BarData(BarDataSet);
+                BarData barData = new BarData(BarDataSet);
 
-                    barData.setValueTextColor(Color.WHITE);
-                    barData.setValueTextSize(18);
+                barData.setValueTextColor(Color.WHITE);
+                barData.setValueTextSize(18);
 
-                    mChart.setData(barData);
-        if(windChart){
-            setColorfullBars();
-            barData.setDrawValues(false);
-        }
+                mChart.setData(barData);
+                if (windChart) {
+                    setColorfullBars();
+                    barData.setDrawValues(false);
+                    mChart.getAxisLeft().setAxisMinimum(-0.18f);
+                }
 
 
                 mChart.invalidate();
 
 
-                if(oneHourSumEnabled) {
-                    textView.setText(title + String.format("%.1f",sum*factor) + prefix);
+                if (oneHourSumEnabled) {
+                    textView.setText(title + String.format("%.1f", sum * factor) + prefix);
                     mChart.getXAxis().setAxisMinimum((mChart.getData().getDataSetByIndex(0)).getEntryForIndex(0).getX());
                     mChart.moveViewToX(mChart.getData().getEntryCount());
                     (mChart.getData().getDataSetByIndex(0)).getEntryForIndex((mChart.getData().getDataSetByIndex(0)).getEntryCount() - 1).setY(sum * factor);
-                }else {
-                    textView.setText(title + String.format("%.1f",barResult.get(barResult.size()-1).getY()) + prefix);
+                } else {
+                    textView.setText(title + String.format("%.1f", barResult.get(barResult.size() - 1).getY()) + prefix);
                 }
                 mChart.getData().notifyDataChanged();
                 mChart.notifyDataSetChanged();
@@ -218,21 +222,30 @@ public class FragmentBarChart  {
 
             @Override
             public void dataUpdated(Entry[] result) {
-                if(oneHourSumEnabled){
+                if (oneHourSumEnabled) {
                     setHourSum(result);
+                }else {
+                    (mChart.getData().getDataSetByIndex(0)).removeFirst();
+                    (mChart.getData().getDataSetByIndex(0)).addEntryOrdered(new BarEntry(result[index].getX() / 240000, result[index].getY()*factor));
+                    mChart.moveViewToX(mChart.getData().getEntryCount());
+                    mChart.getAxisLeft().setAxisMinimum(-0.18f);
+                    mChart.getData().notifyDataChanged();
+                    mChart.notifyDataSetChanged();
+                    mChart.invalidate();
                 }
             }
 
         });
     }
-    public void setMonthlyDataListener(WeatherDataController weatherDataController, final int type){
+
+    public void setMonthlyDataListener(WeatherDataController weatherDataController, final int type) {
         weatherDataController.setOnMonthlyDataArrivedListener(new WeatherDataController.OnMonthlyDataArrivedListener() {
             @Override
             public void avgDataArrived(ArrayList<Entry>[] result) {
-                if(type == 1) {
+                if (type == 1) {
                     ArrayList<BarEntry> barResult = new ArrayList<>();
                     for (Entry e : result[index]) {
-                        barResult.add(new BarEntry(e.getX() / 70000000, e.getY()));
+                        barResult.add(new BarEntry(e.getX() / 70000000, e.getY()*factor));
                     }
                     updateMonthlyChart(barResult);
                 }
@@ -245,10 +258,10 @@ public class FragmentBarChart  {
 
             @Override
             public void sumDataArrived(ArrayList<Entry> result) {
-                if(type == 2) {
+                if (type == 2) {
                     ArrayList<BarEntry> barResult = new ArrayList<>();
                     for (Entry e : result) {
-                        barResult.add(new BarEntry(e.getX() / 70000000, e.getY()));
+                        barResult.add(new BarEntry(e.getX() / 70000000, e.getY()*factor));
                     }
                     updateMonthlyChart(barResult);
                     mChart.getAxisLeft().setAxisMinimum(-0.9f);
@@ -256,8 +269,9 @@ public class FragmentBarChart  {
             }
         });
     }
-    public void updateMonthlyChart(ArrayList<BarEntry> barResult){
-        BarDataSet BarDataSet =ChartsSettings.getBarDataSet(barResult,Color.WHITE);
+
+    public void updateMonthlyChart(ArrayList<BarEntry> barResult) {
+        BarDataSet BarDataSet = ChartsSettings.getBarDataSet(barResult, Color.WHITE);
         BarData barData = new BarData(BarDataSet);
         barData.setValueTextColor(Color.WHITE);
         barData.setValueTextSize(18);
@@ -274,11 +288,12 @@ public class FragmentBarChart  {
         });
         mChart.invalidate();
         float lastVal = barResult.get(barResult.size() - 1).getY();
-        textView.setText(title + String.format("%.1f",lastVal*factor) + prefix);
+        textView.setText(title + String.format("%.1f", lastVal * factor) + prefix);
     }
-    private void calcHourSum(ArrayList<BarEntry> barResult,ArrayList<Entry>[] result){
+
+    private void calcHourSum(ArrayList<BarEntry> barResult, ArrayList<Entry>[] result) {
         time = Calendar.getInstance();
-        for(Entry e: result[index]) {
+        for (Entry e : result[index]) {
             sum += e.getY();
             time.setTimeInMillis((long) e.getX());
             h = time.get(Calendar.HOUR_OF_DAY);
@@ -290,17 +305,17 @@ public class FragmentBarChart  {
         }
     }
 
-    private void setHourSum(Entry[] result){
-        textView.setText(title + String.format("%.1f",sum*factor) + prefix);
-        sum+=result[index].getY();
+    private void setHourSum(Entry[] result) {
+        textView.setText(title + String.format("%.1f", sum * factor) + prefix);
+        sum += result[index].getY();
         time.setTimeInMillis((long) result[index].getX());
-        h =time.get(Calendar.HOUR_OF_DAY);
-        if(h != lastH){
+        h = time.get(Calendar.HOUR_OF_DAY);
+        if (h != lastH) {
             (mChart.getData().getDataSetByIndex(0)).removeFirst();
-            (mChart.getData().getDataSetByIndex(0)).addEntryOrdered(new BarEntry(result[index].getX()/ 2500000,sum*factor));
+            (mChart.getData().getDataSetByIndex(0)).addEntryOrdered(new BarEntry(result[index].getX() / 2500000, sum * factor));
             mChart.moveViewToX(mChart.getData().getEntryCount());
-      //      float minC = mChart.getData().getDataSetByIndex(0).getYMin();
-         //   float maxC = mChart.getData().getDataSetByIndex(0).getYMax();
+            //      float minC = mChart.getData().getDataSetByIndex(0).getYMin();
+            //   float maxC = mChart.getData().getDataSetByIndex(0).getYMax();
             mChart.getXAxis().setAxisMinimum((mChart.getData().getDataSetByIndex(0)).getEntryForIndex(0).getX());
 
 /*            int colors[] = new int[mChart.getData().getDataSetByIndex(0).getEntryCount()];
@@ -314,8 +329,8 @@ public class FragmentBarChart  {
             mChart.notifyDataSetChanged();
             mChart.invalidate();
             textView.invalidate();
-            sum =0;
-        }else{
+            sum = 0;
+        } else {
             (mChart.getData().getDataSetByIndex(0)).getEntryForIndex((mChart.getData().getDataSetByIndex(0)).getEntryCount() - 1).setY(sum * factor);
             mChart.getData().notifyDataChanged();
             mChart.notifyDataSetChanged();
@@ -332,7 +347,8 @@ public class FragmentBarChart  {
             return 0;
         }
     }
-    private  void setColorfullBars() {
+
+    private void setColorfullBars() {
         float minC = mChart.getData().getDataSetByIndex(0).getYMin();
         float maxC = mChart.getData().getDataSetByIndex(0).getYMax();
         int colors[] = new int[mChart.getData().getDataSetByIndex(0).getEntryCount()];

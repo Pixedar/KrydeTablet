@@ -74,15 +74,17 @@ public class MainPagerAdapter extends FragmentStatePagerAdapter {
 
                 RainFragment fragmentLineChart5 = new RainFragment();
                 fragmentLineChart5.getFragmentBarChart().setListener(weatherDataController);
-                fragmentLineChart5.getFragmentBarChart().setIndex(5);
+                fragmentLineChart5.getFragmentBarChart().setIndex(6);
                 fragmentLineChart5.getFragmentBarChart().setPrefix(" kmh");
                 fragmentLineChart5.getFragmentBarChart().settitle("Wiatr: ");
                 fragmentLineChart5.getFragmentBarChart().setWindChart(true);
+                fragmentLineChart5.getFragmentBarChart().setFactor(3.44808949784f);
 
                 fragmentLineChart5.getFragmentBarChart2().setMonthlyDataListener(weatherDataController,1);
-                fragmentLineChart5.getFragmentBarChart2().setIndex(5);
+                fragmentLineChart5.getFragmentBarChart2().setIndex(6);
                 fragmentLineChart5.getFragmentBarChart2().setPrefix(" kmh");
                 fragmentLineChart5.getFragmentBarChart2().settitle("Wiatr: ");
+                fragmentLineChart5.getFragmentBarChart2().setFactor(3.44808949784f);
                 return fragmentLineChart5;
             case 0:
                 pixedar.com.krydetablet.Fragment fragmentLineChart4 = new pixedar.com.krydetablet.Fragment();
