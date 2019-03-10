@@ -247,6 +247,7 @@ public class FragmentLineChart {
                 float peakX = 0;
                 float peakY = 0;
                 List<Entry> vals = ((LineDataSet) mChart.getData().getDataSetByIndex(0)).getValues();
+                int peakIndex = 0;
                 for (int k = 0; k < vals.size() - 1; k++) {
                     if (vals.get(k).getY() > max) {
                         max = vals.get(k).getY();
@@ -265,10 +266,39 @@ public class FragmentLineChart {
                             float c = Math.abs(vals.get(k).getY() - vals.get(k + 1).getY());
                             float avg = ((a * 0.5f) + b + (c * 0.5f)) / 3.0f;
                             if (avg > peak) {
+                                peakIndex = k;
                                 peak = avg;
                                 peakX = vals.get(k).getX();
                                 peakY = vals.get(k).getY();
                             }
+                    }
+                }
+                if(peakIndex < 240&& peak >peakThreshold){
+                    float peak2 = 0;
+                    for (int k = 0; k < vals.size() - 1; k++) {
+                        if (vals.get(k).getY() > max) {
+                            max = vals.get(k).getY();
+                            maxX = vals.get(k).getX();
+                        }
+                        if (vals.get(k).getY() < min) {
+                            min = vals.get(k).getY();
+                            minX = vals.get(k).getX();
+                        }
+                        if (rapidChangeDetection && k > 5 && k < vals.size() - 2 &&
+                                vals.get(k - 1).getX() - vals.get(k - 2).getX() < weatherDataController.getInterval() * 2 &&
+                                vals.get(k).getX() - vals.get(k - 1).getX() < weatherDataController.getInterval() * 2 &&
+                                vals.get(k + 1).getX() - vals.get(k).getX() < weatherDataController.getInterval()) {
+                            float a = Math.abs(vals.get(k - 2).getY() - vals.get(k - 1).getY());
+                            float b = Math.abs(vals.get(k - 1).getY() - vals.get(k).getY());
+                            float c = Math.abs(vals.get(k).getY() - vals.get(k + 1).getY());
+                            float avg = ((a * 0.5f) + b + (c * 0.5f)) / 3.0f;
+                            if (avg > peak2) {
+                                peak = avg;
+                                peak2 = avg;
+                                peakX = vals.get(k).getX();
+                                peakY = vals.get(k).getY();
+                            }
+                        }
                     }
                 }
                 if(rapidChangeDetection&& vals.size() > 20){

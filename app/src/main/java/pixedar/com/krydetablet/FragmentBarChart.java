@@ -229,6 +229,7 @@ public class FragmentBarChart {
                     (mChart.getData().getDataSetByIndex(0)).addEntryOrdered(new BarEntry(result[index].getX() / 240000, result[index].getY()*factor));
                     mChart.moveViewToX(mChart.getData().getEntryCount());
                     mChart.getAxisLeft().setAxisMinimum(-0.18f);
+                    setColorfullBars();
                     mChart.getData().notifyDataChanged();
                     mChart.notifyDataSetChanged();
                     mChart.invalidate();
@@ -354,7 +355,7 @@ public class FragmentBarChart {
         int colors[] = new int[mChart.getData().getDataSetByIndex(0).getEntryCount()];
 
         for (int k = 0; k < colors.length; k++) {
-            colors[k] = Color.HSVToColor(new float[]{map((int) (mChart.getData().getDataSetByIndex(0).getEntryForIndex(k).getY() * 100), (int) ((range.getRangeByIndex(index)[1] + minC) / 2.0f) * 100, (int) ((range.getRangeByIndex(index)[0] + maxC) / 2.0f) * 100, 300, 0), 0.7f, 0.8f});
+            colors[k] = Color.HSVToColor(new float[]{map((int) (mChart.getData().getDataSetByIndex(0).getEntryForIndex(k).getY() * 100), (int) ((range.getRangeByIndex(index)[1]*factor + minC) / 2.0f) * 100, (int) ((range.getRangeByIndex(index)[0]*factor + maxC) / 2.0f) * 100, 300, 0), 0.7f, 0.8f});
             //   colors[k] = Color.HSVToColor(new float[]{map((int) (mChart.getData().getDataSetByIndex(0).getEntryForIndex(k).getY() * 100), (int) minC* 100, (int) maxC* 100, 290, 0), 0.8f, 1});
         }
         ((BarDataSet) mChart.getData().getDataSetByIndex(0)).setColors(colors);
