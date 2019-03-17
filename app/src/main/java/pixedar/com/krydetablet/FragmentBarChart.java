@@ -225,6 +225,7 @@ public class FragmentBarChart {
                 if (oneHourSumEnabled) {
                     setHourSum(result);
                 }else {
+                    textView.setText(title + String.format("%.1f", result[index].getY()*factor) + prefix);
                     (mChart.getData().getDataSetByIndex(0)).removeFirst();
                     (mChart.getData().getDataSetByIndex(0)).addEntryOrdered(new BarEntry(result[index].getX() / 240000, result[index].getY()*factor));
                     mChart.moveViewToX(mChart.getData().getEntryCount());

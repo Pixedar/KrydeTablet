@@ -39,7 +39,7 @@ public class MainPagerAdapter extends FragmentStatePagerAdapter {
                 fragmentLineChart2.getFragmentLineChart().setIndex(4);
                 fragmentLineChart2.getFragmentLineChart().setPrefix(" Hpa");
                 fragmentLineChart2.getFragmentLineChart().settitle("Ciśnienie: ");
-                fragmentLineChart2.getFragmentLineChart().setRapidChangeDetection(0.108f,2.0f,12.7f);
+                fragmentLineChart2.getFragmentLineChart().setRapidChangeDetection(0.108f,1.95f,12.7f);
 
                 fragmentLineChart2.getFragmentBarChart().setMonthlyDataListener(weatherDataController,1);
                 fragmentLineChart2.getFragmentBarChart().setIndex(4);

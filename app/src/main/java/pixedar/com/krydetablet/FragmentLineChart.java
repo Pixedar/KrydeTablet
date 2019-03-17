@@ -275,6 +275,8 @@ public class FragmentLineChart {
                 }
                 if(peakIndex < 240&& peak >peakThreshold){
                     float peak2 = 0;
+                    float peakX2 = 0;
+                    float peakY2 = 0;
                     for (int k = 0; k < vals.size() - 1; k++) {
                         if (vals.get(k).getY() > max) {
                             max = vals.get(k).getY();
@@ -284,7 +286,7 @@ public class FragmentLineChart {
                             min = vals.get(k).getY();
                             minX = vals.get(k).getX();
                         }
-                        if (rapidChangeDetection && k > 5 && k < vals.size() - 2 &&
+                        if (rapidChangeDetection && k > 240 && k < vals.size() - 2 &&
                                 vals.get(k - 1).getX() - vals.get(k - 2).getX() < weatherDataController.getInterval() * 2 &&
                                 vals.get(k).getX() - vals.get(k - 1).getX() < weatherDataController.getInterval() * 2 &&
                                 vals.get(k + 1).getX() - vals.get(k).getX() < weatherDataController.getInterval()) {
@@ -293,14 +295,18 @@ public class FragmentLineChart {
                             float c = Math.abs(vals.get(k).getY() - vals.get(k + 1).getY());
                             float avg = ((a * 0.5f) + b + (c * 0.5f)) / 3.0f;
                             if (avg > peak2) {
-                                peak = avg;
                                 peak2 = avg;
-                                peakX = vals.get(k).getX();
-                                peakY = vals.get(k).getY();
+                                peakX2 = vals.get(k).getX();
+                                peakY2 = vals.get(k).getY();
                             }
                         }
                     }
+                    if(peak2 > peakThreshold){
+                        peakX = peakX2;
+                        peakY = peakY2;
+                    }
                 }
+
                 if(rapidChangeDetection&& vals.size() > 20){
                     if(vals.get(vals.size()-1).getX() - vals.get(vals.size()-21).getX() < weatherDataController.getInterval() * 21){
                         float v = vals.get(vals.size()-1).getY() - vals.get(vals.size()-21).getY();
@@ -353,13 +359,13 @@ public class FragmentLineChart {
                                 if (peak > peakThreshold * 1.3f&&vals.get(vals.size()-1).getX() - peakX < 4*60*60*1000) {
                                     if(!currentDetection) {
                                         textView.setTextSize(23);
-                                        textView.setText(title + String.valueOf(result[index].getY()) + prefix + "zajerestrowano bardzo duży skok ciśnienia");
+                                        textView.setText(title + String.valueOf(result[index].getY()) + prefix + " zajerestrowano bardzo duży skok ciśnienia");
                                     }
                                     enableRedWarining = true;
                                 } else if(vals.get(vals.size()-1).getX() - peakX < 2*60*60*1000){
                                     if(!currentDetection) {
                                         textView.setTextSize(23);
-                                        textView.setText(title + String.valueOf(result[index].getY()) + prefix + "zajerestrowano słaby skok ciśnienia");
+                                        textView.setText(title + String.valueOf(result[index].getY()) + prefix + " zajerestrowano słaby skok ciśnienia");
                                     }
                                     enableYellowWarining = true;
                                 }
